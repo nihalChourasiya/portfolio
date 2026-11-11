@@ -81,3 +81,9 @@
     font-size: 18px;
   }
 }
+
+.header ul { gap: 22px; }
+@media (max-width: 900px) { .header ul { gap: 14px; } .header ul a { font-size: 11px; } }
+@media (max-width: 600px) { .header ul { flex-wrap: wrap; justify-content: flex-end; max-width: 270px; gap: 7px 14px; } .header ul a { font-size: 10px; } }
+@media (min-width: 900px) and (max-width: 1399px) { .navbar-connect { display: none; } }
+@media (max-width: 499px) { .header ul { flex-direction: row; align-items: center; } }

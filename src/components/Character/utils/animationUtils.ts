@@ -3,6 +3,7 @@ import { GLTF } from "three-stdlib";
 import { eyebrowBoneNames, typingBoneNames } from "../../../data/boneData";
 
 const setAnimations = (gltf: GLTF) => {
+  let blinkTimer: ReturnType<typeof setTimeout> | undefined;
   let character = gltf.scene;
   let mixer = new THREE.AnimationMixer(character);
   if (gltf.animations) {
@@ -39,7 +40,7 @@ const setAnimations = (gltf: GLTF) => {
     const introAction = mixer.clipAction(introClip!);
     introAction.clampWhenFinished = true;
     introAction.reset().play();
-    setTimeout(() => {
+    blinkTimer = setTimeout(() => {
       const blink = gltf.animations.find((clip) => clip.name === "Blink");
       mixer.clipAction(blink!).play().fadeIn(0.5);
     }, 2500);
@@ -80,7 +81,12 @@ const setAnimations = (gltf: GLTF) => {
       hoverDiv.removeEventListener("mouseleave", onLeaveFace);
     };
   }
-  return { mixer, startIntro, hover };
+  const dispose = () => {
+    clearTimeout(blinkTimer);
+    mixer.stopAllAction();
+    mixer.uncacheRoot(character);
+  };
+  return { mixer, startIntro, hover, dispose };
 };
 
 const createBoneAction = (

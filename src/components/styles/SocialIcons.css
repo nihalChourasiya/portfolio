@@ -23,7 +23,7 @@
 }
 .social-icons a:hover {
   color: var(--backgroundColor);
-  /* transform: scale(1.2); */
+  transform: translate(-50%, -50%) scale(1.12);
 }
 .social-icons span {
   width: 50px;
@@ -40,7 +40,6 @@
   transform: translate(-50%, -50%);
   display: flex;
   font-size: 23px;
-  will-change: left, top;
   transition: transform 0.3s ease-out;
 }
 .resume-button {

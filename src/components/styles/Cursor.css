@@ -31,3 +31,5 @@
     --size: 0px;
   }
 }
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) { .cursor-main { display: none; } }

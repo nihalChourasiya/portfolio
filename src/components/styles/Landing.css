@@ -356,3 +356,7 @@ h2.landing-info-h2 {
     font-size: 75px;
   }
 }
+
+.landing-credential { color: #c7bacf; font-size: 14px; line-height: 1.6; letter-spacing: .6px; }
+.landing-intro h1 { font-size: clamp(24px, 2.5vw, 50px); line-height: 1.15; }
+@media (max-width: 600px) { .landing-intro { top: 15%; } .landing-credential { font-size: 12px; } }

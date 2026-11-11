@@ -214,3 +214,10 @@
     justify-content: left;
   }
 }
+
+.career-info h3 { font-size: 16px; line-height: 1.5; color: #c7bacf; margin-top: 12px; }
+.career-info h4 { line-height: 1.2; }
+.career-info h5 { text-transform: none; }
+.career-info-box { align-items: center; }
+.career-info-in { min-width: 0; }
+@media (max-width: 900px) { .career-info-box { align-items: stretch; } .career-info h4 { width: auto; } }

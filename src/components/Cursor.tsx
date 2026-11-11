@@ -5,50 +5,35 @@ import gsap from "gsap";
 const Cursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    let hover = false;
-    const cursor = cursorRef.current!;
-    const mousePos = { x: 0, y: 0 };
-    const cursorPos = { x: 0, y: 0 };
-    document.addEventListener("mousemove", (e) => {
-      mousePos.x = e.clientX;
-      mousePos.y = e.clientY;
-    });
-    requestAnimationFrame(function loop() {
-      if (!hover) {
-        const delay = 6;
-        cursorPos.x += (mousePos.x - cursorPos.x) / delay;
-        cursorPos.y += (mousePos.y - cursorPos.y) / delay;
-        gsap.to(cursor, { x: cursorPos.x, y: cursorPos.y, duration: 0.1 });
-        // cursor.style.transform = `translate(${cursorPos.x}px, ${cursorPos.y}px)`;
-      }
-      requestAnimationFrame(loop);
-    });
-    document.querySelectorAll("[data-cursor]").forEach((item) => {
-      const element = item as HTMLElement;
-      element.addEventListener("mouseover", (e: MouseEvent) => {
-        const target = e.currentTarget as HTMLElement;
-        const rect = target.getBoundingClientRect();
-
-        if (element.dataset.cursor === "icons") {
-          cursor.classList.add("cursor-icons");
-
-          gsap.to(cursor, { x: rect.left, y: rect.top, duration: 0.1 });
-          //   cursor.style.transform = `translate(${rect.left}px,${rect.top}px)`;
+    const media = gsap.matchMedia();
+    media.add("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)", () => {
+      const cursor = cursorRef.current!;
+      const xTo = gsap.quickTo(cursor, "x", { duration: 0.18, ease: "power2.out" });
+      const yTo = gsap.quickTo(cursor, "y", { duration: 0.18, ease: "power2.out" });
+      const onMove = (event: PointerEvent) => {
+        const target = (event.target as Element).closest<HTMLElement>("[data-cursor]");
+        const icons = target?.dataset.cursor === "icons";
+        cursor.classList.toggle("cursor-icons", icons);
+        cursor.classList.toggle("cursor-disable", target?.dataset.cursor === "disable");
+        if (icons) {
+          const rect = target!.getBoundingClientRect();
           cursor.style.setProperty("--cursorH", `${rect.height}px`);
-          hover = true;
+          xTo(rect.left);
+          yTo(rect.top);
+        } else {
+          xTo(event.clientX);
+          yTo(event.clientY);
         }
-        if (element.dataset.cursor === "disable") {
-          cursor.classList.add("cursor-disable");
-        }
-      });
-      element.addEventListener("mouseout", () => {
-        cursor.classList.remove("cursor-disable", "cursor-icons");
-        hover = false;
-      });
+      };
+      document.addEventListener("pointermove", onMove, { passive: true });
+      return () => {
+        document.removeEventListener("pointermove", onMove);
+        xTo.tween.kill();
+        yTo.tween.kill();
+      };
     });
+    return () => media.revert();
   }, []);
-
-  return <div className="cursor-main" ref={cursorRef}></div>;
+  return <div className="cursor-main" ref={cursorRef} aria-hidden="true" />;
 };
-
 export default Cursor;

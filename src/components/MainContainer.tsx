@@ -1,5 +1,7 @@
-import { lazy, PropsWithChildren, Suspense, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import About from "./About";
+import Frontend from "./Frontend";
+import AcademicHighlights from "./AcademicHighlights";
 import Career from "./Career";
 import Contact from "./Contact";
 import Cursor from "./Cursor";
@@ -10,7 +12,7 @@ import WhatIDo from "./WhatIDo";
 import Work from "./Work";
 import setSplitText from "./utils/splitText";
 
-const TechStack = lazy(() => import("./TechStack"));
+import TechStack from "./TechStack";
 
 const MainContainer = ({ children }: PropsWithChildren) => {
   const [isDesktopView, setIsDesktopView] = useState<boolean>(
@@ -18,16 +20,29 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
-    const resizeHandler = () => {
-      setSplitText();
-      setIsDesktopView(window.innerWidth > 1024);
+    const desktop = window.matchMedia("(min-width: 1025px)");
+    const onBreakpoint = () => setIsDesktopView(desktop.matches);
+    let cleanupText = setSplitText();
+    let timer: number | undefined;
+    let width = window.innerWidth;
+    const onResize = () => {
+      if (width === window.innerWidth) return;
+      width = window.innerWidth;
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        cleanupText?.();
+        cleanupText = setSplitText();
+      }, 180);
     };
-    resizeHandler();
-    window.addEventListener("resize", resizeHandler);
+    desktop.addEventListener("change", onBreakpoint);
+    window.addEventListener("resize", onResize, { passive: true });
     return () => {
-      window.removeEventListener("resize", resizeHandler);
+      desktop.removeEventListener("change", onBreakpoint);
+      window.removeEventListener("resize", onResize);
+      clearTimeout(timer);
+      cleanupText?.();
     };
-  }, [isDesktopView]);
+  }, []);
 
   return (
     <div className="container-main">
@@ -42,12 +57,10 @@ const MainContainer = ({ children }: PropsWithChildren) => {
             <About />
             <WhatIDo />
             <Career />
+            <Frontend />
             <Work />
-            {isDesktopView && (
-              <Suspense fallback={<div>Loading....</div>}>
-                <TechStack />
-              </Suspense>
-            )}
+            <TechStack />
+            <AcademicHighlights />
             <Contact />
           </div>
         </div>

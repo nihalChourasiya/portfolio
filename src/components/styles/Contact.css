@@ -90,3 +90,10 @@ a.contact-social {
     width: calc(100% - 25px);
   }
 }
+
+.contact-intro { color: #c7bacf; max-width: 550px; margin: 20px 0 45px; }
+.contact-flex { gap: 35px; }
+.contact-box { min-width: 0; }
+.contact-box a { overflow-wrap: anywhere; }
+.contact-box h5 { font-size: 14px; }
+.contact-box h2 { line-height: 1.7; }

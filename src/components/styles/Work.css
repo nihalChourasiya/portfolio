@@ -23,8 +23,8 @@
   width: 100%;
   display: flex;
   height: 100%;
-  margin-left: -80px;
-  padding-right: 120px;
+  margin-left: 0;
+  padding-right: 0;
   position: relative;
 }
 .work-box {
@@ -44,7 +44,7 @@
 .work-flex::before,
 .work-flex::after {
   content: "";
-  width: calc(50000vw);
+  width: 100%;
   height: 1px;
   background-color: #363636;
   position: absolute;
@@ -158,8 +158,8 @@
     padding: 50px;
   }
   .work-flex {
-    margin-left: -50px;
-    padding-right: 75px;
+    margin-left: 0;
+    padding-right: 0;
   }
   .work-section h2 {
     font-size: 50px;
@@ -171,8 +171,8 @@
     padding: 30px;
   }
   .work-flex {
-    margin-left: -30px;
-    padding-right: 45px;
+    margin-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -208,3 +208,24 @@
     height: auto;
   }
 }
+
+.work-box { gap: 24px; width: clamp(390px, 39vw, 620px); padding: 35px; }
+.work-title { gap: 20px; margin-bottom: 12px; }
+.work-title h4 { font-size: 23px; font-weight: 500; line-height: 1.15; }
+.work-title > div { max-width: 80%; }
+.work-info p.project-description { margin: 14px 0 18px; line-height: 1.55; font-size: 15px; color: #d0c6d6; font-weight: 300; }
+.work-info p.project-date { color: var(--accentColor); font-size: 13px; }
+.project-links { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px; font-size: 14px; color: var(--accentColor); }
+.work-image img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; border-radius: 12px; max-height: 240px; }
+@media (max-height: 800px) and (min-width: 901px) { .work-box { gap: 15px; padding: 24px; } .work-info p.project-description { font-size: 13px; margin: 10px 0; } .work-image img { max-height: 155px; } }
+@media (max-width: 900px) {
+  .work-section { height: auto; }
+  .work-flex { flex-direction: column; margin-left: 0; padding-right: 0; }
+  .work-box { width: 100%; border-right: 0; border-top: 1px solid #363636; padding: 30px 0; gap: 22px; }
+  .work-flex .work-box:nth-child(even) { flex-direction: column; }
+  .work-flex::before, .work-flex::after { display: none; }
+  .work-info > p { width: 100%; }
+  .work-image img { max-height: none; }
+}
+
+@media (min-width: 901px) { .work-flex { width: max-content; min-width: 100%; } }

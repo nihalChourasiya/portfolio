@@ -69,3 +69,5 @@
     line-height: 2.7rem;
   }
 }
+
+.about-me p.about-detail { font-size: clamp(15px, 1.2vw, 21px); line-height: 1.6; font-weight: 300; color: #c7bacf; letter-spacing: .3px; }

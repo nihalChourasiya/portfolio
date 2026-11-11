@@ -10,28 +10,28 @@ const Loading = ({ percent }: { percent: number }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [clicked, setClicked] = useState(false);
 
-  if (percent >= 100) {
-    setTimeout(() => {
-      setLoaded(true);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 1000);
-    }, 600);
-  }
+  const complete = percent >= 100;
+  useEffect(() => {
+    if (!complete) return;
+    const loadedTimer = window.setTimeout(() => setLoaded(true), 600);
+    const completeTimer = window.setTimeout(() => setIsLoaded(true), 1600);
+    return () => { clearTimeout(loadedTimer); clearTimeout(completeTimer); };
+  }, [complete]);
 
   useEffect(() => {
-    import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
-        setTimeout(() => {
-          if (module.initialFX) {
-            module.initialFX();
-          }
-          setIsLoading(false);
-        }, 900);
-      }
+    if (!isLoaded) return;
+    let cancelled = false;
+    let timer: number | undefined;
+    setClicked(true);
+    import("./utils/initialFX").then(module => {
+      if (cancelled) return;
+      timer = window.setTimeout(() => {
+        module.initialFX();
+        setIsLoading(false);
+      }, 900);
     });
-  }, [isLoaded]);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [isLoaded, setIsLoading]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
     const { currentTarget: target } = e;
@@ -46,7 +46,7 @@ const Loading = ({ percent }: { percent: number }) => {
     <>
       <div className="loading-header">
         <a href="/#" className="loader-title" data-cursor="disable">
-          Logo
+          NC.
         </a>
         <div className={`loaderGame ${clicked && "loader-out"}`}>
           <div className="loaderGame-container">
@@ -62,8 +62,8 @@ const Loading = ({ percent }: { percent: number }) => {
       <div className="loading-screen">
         <div className="loading-marquee">
           <Marquee>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
-            <span> A Creative Developer</span> <span>A Creative Designer</span>
+            <span>Nihal Chourasiya</span> <span>Web apps · Systems · Research</span>
+            <span>Nihal Chourasiya</span> <span>Web apps · Systems · Research</span>
           </Marquee>
         </div>
         <div
@@ -131,5 +131,5 @@ export const setProgress = (setLoading: (value: number) => void) => {
       }, 2);
     });
   }
-  return { loaded, percent, clear };
+  return { loaded, percent, clear, cancel: () => clearInterval(interval) };
 };

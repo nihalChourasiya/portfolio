@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import "./styles/Navbar.css";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
@@ -23,34 +23,31 @@ const Navbar = () => {
     smoother.scrollTop(0);
     smoother.paused(true);
 
-    let links = document.querySelectorAll(".header ul a");
-    links.forEach((elem) => {
-      let element = elem as HTMLAnchorElement;
-      element.addEventListener("click", (e) => {
-        if (window.innerWidth > 1024) {
-          e.preventDefault();
-          let elem = e.currentTarget as HTMLAnchorElement;
-          let section = elem.getAttribute("data-href");
-          smoother.scrollTo(section, true, "top top");
-        }
-      });
-    });
-    window.addEventListener("resize", () => {
-      ScrollSmoother.refresh(true);
-    });
+    const links = document.querySelectorAll<HTMLAnchorElement>(".header ul a");
+    const onClick = (event: Event) => {
+      if (window.innerWidth <= 1024) return;
+      event.preventDefault();
+      const section = (event.currentTarget as HTMLAnchorElement).dataset.href;
+      if (section) smoother.scrollTo(section, true, "top top");
+    };
+    links.forEach(link => link.addEventListener("click", onClick));
+    return () => {
+      links.forEach(link => link.removeEventListener("click", onClick));
+      smoother.kill();
+    };
   }, []);
   return (
     <>
       <div className="header">
         <a href="/#" className="navbar-title" data-cursor="disable">
-          Logo
+          NC.
         </a>
         <a
-          href="mailto:example@mail.com"
+          href="mailto:nhlchrs@gmail.com"
           className="navbar-connect"
           data-cursor="disable"
         >
-          example@mail.com
+          nhlchrs@gmail.com
         </a>
         <ul>
           <li>
@@ -60,9 +57,11 @@ const Navbar = () => {
           </li>
           <li>
             <a data-href="#work" href="#work">
-              <HoverLinks text="WORK" />
+              <HoverLinks text="PROJECTS" />
             </a>
           </li>
+          <li><a data-href="#education" href="#education"><HoverLinks text="EDUCATION" /></a></li>
+          <li><a data-href="#skills" href="#skills"><HoverLinks text="SKILLS" /></a></li>
           <li>
             <a data-href="#contact" href="#contact">
               <HoverLinks text="CONTACT" />
